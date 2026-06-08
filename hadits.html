@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Kuis Al-Qur'an Hadis Kelas VII</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <header class="bg-green-700 text-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
+            <div class="text-center md:text-left mb-2 md:mb-0">
+                <h1 class="text-xl font-bold tracking-wide">Asesmen Sumatif Akhir Tahun (ASAT)</h1>
+                <p class="text-sm text-green-100 font-medium">SMP NU Al Ma'ruf Kudus | TA 2025/2026</p>
+            </div>
+            <div class="bg-green-800 px-4 py-2 rounded-lg text-center shadow-inner">
+                <span class="text-xs block uppercase tracking-wider text-green-200">Mata Pelajaran</span>
+                <span class="font-semibold text-sm md:text-base">Al-Qur'an Hadis (Kelas VII / Genap)</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        
+        <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200 mb-8 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+            <div class="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                <span class="font-bold text-blue-800 block mb-1">Materi 1: Mim Sukun</span>
+                <p class="text-slate-600">Ikhfa Syafawi, Idgham Mimi, Izhar Syafawi.</p>
+                <span class="text-xs font-semibold text-slate-400 mt-2 block">Soal: 1-11, 13-14, 19</span>
+            </div>
+            <div class="p-3 bg-amber-50 rounded-lg border border-amber-100">
+                <span class="font-bold text-amber-800 block mb-1">Materi 2: Toleransi</span>
+                <p class="text-slate-600">Toleransi dalam kehidupan beragama & sosial.</p>
+                <span class="text-xs font-semibold text-slate-400 mt-2 block">Soal: 12, 15-18, 27-28</span>
+            </div>
+            <div class="p-3 bg-purple-50 rounded-lg border border-purple-100">
+                <span class="font-bold text-purple-800 block mb-1">Materi 3: Problematika Da'wah</span>
+                <p class="text-slate-600">Tantangan, strategi, dan kesabaran berdakwah.</p>
+                <span class="text-xs font-semibold text-slate-400 mt-2 block">Soal: 20-26, 29-40</span>
+            </div>
+        </div>
+
+        <form id="quizForm" onsubmit="hitungSkor(event)">
+            <div id="quizContainer" class="space-y-6">
+                </div>
+
+            <div class="mt-8 p-4 bg-white rounded-xl shadow-sm border border-slate-200 flex justify-center">
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-3 rounded-xl shadow-md transition duration-300 transform hover:-translate-y-0.5">
+                    Selesai & Hitung Nilai
+                </button>
+            </div>
+        </form>
+
+        <div id="resultBox" class="hidden mt-8 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-8 shadow-lg border-2 border-green-500 text-center animate-fade-in">
+            <h2 class="text-2xl font-bold text-slate-800 mb-2">Hasil Penilaian Anda</h2>
+            <div class="w-32 h-32 bg-white rounded-full flex items-center justify-center mx-auto my-4 shadow-md border-4 border-green-500">
+                <span id="scoreDisplay" class="text-4xl font-extrabold text-green-700">0</span>
+            </div>
+            <p id="statsDisplay" class="text-slate-600 font-medium mb-4"></p>
+            <button onclick="window.scrollTo({top: 0, behavior: 'smooth'}); location.reload();" class="text-sm font-semibold bg-white text-slate-700 border border-slate-300 px-4 py-2 rounded-lg shadow-sm hover:bg-slate-50 transition">
+                Ulangi Ujian
+            </button>
+        </div>
+
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400 text-center py-6 mt-12 border-t border-slate-700 text-sm">
+        <p>&copy; 2026 SMP NU Al Ma'ruf Kudus. Penyusun Soal: Abdul Rochim.</p>
+        <p class="text-xs text-slate-500 mt-1">Sistem Ujian Interaktif Pilihan Ganda - Kurikulum Merdeka</p>
+    </footer>
+
+    <script>
+        // Data Soal Lengkap 40 PG disesuaikan urutan nomor pada kisi-kisi gambar
+        const daftarSoal = [
+            // --- MATERI 1: HUKUM BACAAN MIM SUKUN (Soal: 1,2,3,4,5,6,7,8,9,10,11,13,14,19) ---
+            {
+                no: 1,
+                materi: "Hukum bacaan mim sukun",
+                tanya: "Apabila ada mim sukun (مْ) bertemu dengan huruf mim (م), maka hukum bacaannya dinamakan...",
+                opsi: ["Ikhfa Syafawi", "Idgham Mimi / Mutamatsilain", "Izhar Syafawi", "Idgham Bilaghunnah"],
+                kunci: 1
+            },
+            {
+                no: 2,
+                materi: "Hukum bacaan mim sukun",
+                tanya: "Cara membaca hukum bacaan Ikhfa Syafawi yang tepat adalah...",
+                opsi: ["Membaca huruf mim dengan jelas di bibir", "Memasukkan suara mim ke huruf berikutnya tanpa dengung", "Menyamarkan suara mim di bibir disertai dengan dengung (ghunnah)", "Membalikkan suara mim menjadi suara nun"],
+                kunci: 2
+            },
+            {
+                no: 3,
+                materi: "Hukum bacaan mim sukun",
+                tanya: "Huruf h उनके (hijaiyah) yang menjadi satu-satunya pasangan dari hukum Ikhfa Syafawi adalah...",
+                opsi: ["Mim (م)", "Ba (ب)", "Wawu (و)", "Alif (أ)"],
+                kunci: 1
+            },
+            {
+                no: 4,
+                materi: "Hukum bacaan mim sukun",
+                tanya: "Hukum bacaan Izhar Syafawi terjadi apabila terdapat mim sukun (مْ) bertemu dengan...",
+                opsi: ["Semua huruf hijaiyah kecuali mim dan ba", "Hanya huruf alif dan ain", "Huruf mim dan ba saja", "Huruf-huruf halqi (tenggorokan)"],
+                kunci: 0
+            },
+            {
+                no: 5,
+                materi: "Hukum bacaan mim sukun",
+                tanya: "Perhatikan kata berikut: (تَرْمِيهِمْ بِحِجَارَةٍ). Potongan ayat tersebut mengandung hukum bacaan...",
+                opsi: ["Idgham Mimi", "Izhar Syafawi", "Ikhfa Syafawi", "Izhar Halqi"],
+                kunci: 2
+            },
+            {
+                no: 6,
+                materi: "Hukum bacaan mim sukun",
+                tanya: "Pada kata (أَلَمْ يَجْعَلْ), hukum mim sukun harus dibaca secara...",
+                opsi: ["Samu-samar dan mendengung", "Jelas dan terang di bibir tanpa dengung", "Melebur masuk ke huruf ya", "Memantul kuat (qalqalah)"],
+                kunci: 1
+            },
+            {
+                no: 7,
+                materi: "Hukum bacaan mim sukun",
+                tanya: "Kata 'Syafawi' pada hukum-hukum bacaan mim sukun memiliki arti secara bahasa yaitu...",
+                opsi: ["Tenggorokan", "Lidah", "Dua Bibir", "Rongga Mulut"],
+                kunci: 2
+            },
+            {
+                no: 8,
+                materi: "Hukum bacaan mim sukun",
+                tanya: "Di antara potongan ayat berikut, manakah yang mengandung hukum bacaan Idgham Mimi?",
+                opsi: ["أَنْعَمْتَ عَلَيْهِمْ", "وَمَا لَهُمْ مِنْ دُونِهِ", "ذَٰلِكُمْ خَيْرٌ لَكُمْ", "أَمْ لَمْ تُنْذِرْهُمْ"],
+                kunci: 1
+            },
+            {
+                no: 9,
+                materi: "Hukum bacaan mim sukun",
+                tanya: "Mengapa pembacaan Izhar Syafawi pada huruf Wawu (و) dan Fa (ف) memerlukan perhatian lebih ekstra agar tidak tertukar?",
+                opsi: ["Karena makhraj huruf-huruf tersebut sangat dekat atau sama dengan makhraj Mim di bibir", "Karena huruf tersebut merupakan huruf ghunnah", "Karena harus dibaca samar", "Karena letaknya selalu di akhir ayat"],
+                kunci: 0
+            },
+            {
+                no: 10,
+                materi: "Hukum bacaan mim sukun",
+                tanya: "Berapakah jumlah total huruf hijaiyah yang menyusun hukum bacaan Izhar Syafawi?",
+                opsi: ["2 huruf", "15 huruf", "26 huruf", "6 huruf"],
+                kunci: 2
+            },
+            {
+                no: 11,
+                materi: "Hukum bacaan mim sukun",
+                tanya: "Hukum bacaan mim sukun dibagi menjadi 3 macam. Urutan yang benar adalah...",
+                opsi: ["Izhar Halqi, Ikhfa Haqiqi, Idgham Bighunnah", "Ikhfa Syafawi, Idgham Mimi, Izhar Syafawi", "Izhar Syafawi, Iklab, Idgham Bilaghunnah", "Ikhfa Syafawi, Idgham Bighunnah, Izhar Halqi"],
+                kunci: 1
+            },
+            
+            // --- MATERI 2: TOLERANSI DALAM KEHIDUPAN (Soal: 12) ---
+            {
+                no: 12,
+                materi: "Toleransi dalam kehidupan",
+                tanya: "Istilah toleransi dalam khazanah Islam sering disepadankan dengan kata...",
+                opsi: ["Tafakkur", "Tasamuh", "Ta'awun", "Takaful"],
+                kunci: 1
+            },
+
+            // --- KEMBALI MATERI 1: HUKUM BACAAN MIM SUKUN (Soal: 13, 14) ---
+            {
+                no: 13,
+                materi: "Hukum bacaan mim sukun",
+                tanya: "Perhatikan lafal (لَهُمْ فِيهَا). Potongan ayat ini tidak boleh dibaca berdengung sebab merupakan hukum...",
+                opsi: ["Ikhfa Syafawi", "Idgham Mimi", "Izhar Syafawi", "Ikhfa Haqiqi"],
+                kunci: 2
+            },
+            {
+                no: 14,
+                materi: "Hukum bacaan mim sukun",
+                tanya: "Panjang ketukan atau harakat saat mendengungkan bacaan Idgham Mimi yang ideal adalah...",
+                opsi: ["1 harakat", "2-3 harakat", "5 harakat", "6 harakat"],
+                kunci: 1
+            },
+
+            // --- MATERI 2: TOLERANSI DALAM KEHIDUPAN (Soal: 15,16,17,18) ---
+            {
+                no: 15,
+                materi: "Toleransi dalam kehidupan",
+                tanya: "Sikap toleransi antarumat beragama yang diajarkan dalam Surah Al-Kafirun berbunyi 'Lakum dinukum waliyadin', artinya adalah...",
+                opsi: ["Dan aku tidak akan pernah menjadi penyembah apa yang kamu sembah", "Untukmu agamamu, dan untukku agamaku", "Katakanlah (Muhammad), Wahai orang-orang kafir", "Aku tidak akan menyembah apa yang kamu sembah"],
+                kunci: 1
+            },
+            {
+                no: 16,
+                materi: "Toleransi dalam kehidupan",
+                tanya: "Batas toleransi dalam Islam yang sangat mutlak dan tidak boleh dilanggar adalah dalam hal...",
+                opsi: ["Urusan perdagangan dan ekonomi", "Akidah dan ibadah ritual", "Kerja bakti kebersihan lingkungan", "Gotong royong membantu korban bencana"],
+                kunci: 1
+            },
+            {
+                no: 17,
+                materi: "Toleransi dalam kehidupan",
+                tanya: "Sikap menghargai perbedaan pendapat di dalam kelas saat berdiskusi kelompok merupakan perwujudan toleransi di lingkungan...",
+                opsi: ["Keluarga", "Masyarakat", "Sekolah", "Negara"],
+                kunci: 2
+            },
+            {
+                no: 18,
+                materi: "Toleransi dalam kehidupan",
+                tanya: "Dampak positif utama dari penerapan sikap tasamuh di tengah masyarakat yang majemuk adalah...",
+                opsi: ["Terwujudnya kedamaian, persatuan, dan keharmonisan hidup", "Menimbulkan persaingan yang tidak sehat antar golongan", "Membuat masyarakat menjadi homogen/seragam", "Hilangnya identitas agama masing-masing"],
+                kunci: 0
+            },
+
+            // --- KEMBALI MATERI 1: HUKUM BACAAN MIM SUKUN (Soal: 19) ---
+            {
+                no: 19,
+                materi: "Hukum bacaan mim sukun",
+                tanya: "Lafal (إِنَّكُمْ مَّكِثُونَ) mengandung hukum bacaan Idgham mimi karena...",
+                opsi: ["Nun bertanda tasydid", "Mim sukun bertemu dengan huruf mim berharakat", "Mim sukun bertemu kaf", "Kaf bertemu dengan mim"],
+                kunci: 1
+            },
+
+            // --- MATERI 3: PROBLEMATIKA DA'WAH (Soal: 20-26) ---
+            {
+                no: 20,
+                materi: "Problematika Da'wah",
+                tanya: "Secara bahasa, kata 'Da'wah' berasal dari bahasa Arab yang bermakna...",
+                opsi: ["Memaksa", "Memanggil, mengajak, atau menyeru", "Memerintah", "Menghakimi"],
+                kunci: 1
+            },
+            {
+                no: 21,
+                materi: "Problematika Da'wah",
+                tanya: "Tantangan dakwah yang dihadapi oleh para Nabi dan Rasul pada zaman dahulu mayoritas berupa...",
+                opsi: ["Penolakan, hinaan, bahkan ancaman fisik dari kaum kafir", "Kurangnya sarana prasarana digital", "Masalah finansial dan ekonomi", "Perbedaan bahasa antarsuku saja"],
+                kunci: 0
+            },
+            {
+                no: 22,
+                materi: "Problematika Da'wah",
+                tanya: "Dalam Surah An-Nahl ayat 125, metode utama dakwah diperintahkan dengan tiga cara, yaitu...",
+                opsi: ["Hikmah, Mau'izah Hasanah, dan Jidal (debat) yang baik", "Kekerasan, intimidasi, dan pemaksaan", "Hadiah, sanjungan, dan pujian", "Sembunyi-sembunyi, pasif, dan putus asa"],
+                kunci: 0
+            },
+            {
+                no: 23,
+                materi: "Problematika Da'wah",
+                tanya: "Berdakwah dengan memberikan teladan perilaku yang baik dan terpuji langsung dalam kehidupan sehari-hari disebut dakwah...",
+                opsi: ["Bil Lisan", "Bil Qolbi", "Bil Hal", "Bil Kitabah"],
+                kunci: 2
+            },
+            {
+                no: 24,
+                materi: "Problematika Da'wah",
+                tanya: "Salah satu problematika dakwah internal umat Islam saat ini adalah 'tasyaddud', yang artinya...",
+                opsi: ["Sikap terlalu meremehkan syariat agama", "Sikap ekstrem, kaku, dan radikal dalam beragama", "Sikap malas menuntut ilmu agama", "Sikap cinta dunia yang berlebihan"],
+                kunci: 1
+            },
+            {
+                no: 25,
+                materi: "Problematika Da'wah",
+                tanya: "Ketika seorang dai menghadapi penolakan keras saat berdakwah, maka sikap terbaik yang diajarkan al-Qur'an adalah...",
+                opsi: ["Membalas dengan kemarahan dan caci maki", "Sabar, tabah, dan mendoakan kebaikan agar mereka mendapat hidayah", "Berhenti berdakwah untuk selamanya", "Memusuhi seluruh keluarga yang menolak"],
+                kunci: 1
+            },
+            {
+                no: 26,
+                materi: "Problematika Da'wah",
+                tanya: "Hambatan dakwah di era digital/modern saat ini yang paling sering dijumpai adalah...",
+                opsi: ["Sulitnya mencari tempat ibadah", "Maraknya berita bohong (hoaks), fitnah, dan ujaran kebencian di media sosial", "Tidak adanya jaringan internet di perkotaan", "Larangan menulis buku agama Islam"],
+                kunci: 1
+            },
+
+            // --- MATERI 2: TOLERANSI DALAM KEHIDUPAN (Soal: 27, 28) ---
+            {
+                no: 27,
+                materi: "Toleransi dalam kehidupan",
+                tanya: "Salah satu contoh bentuk toleransi sosial di masyarakat tanpa mencampuradukkan akidah adalah...",
+                opsi: ["Ikut serta melaksanakan ritual ibadah agama lain", "Menghadiri kerja bakti desa bersama warga yang berbeda keyakinan", "Meyakini kebenaran semua agama secara bersamaan", "Membeli atribut keagamaan non-muslim untuk dipakai sehari-hari"],
+                kunci: 1
+            },
+            {
+                no: 28,
+                materi: "Toleransi dalam kehidupan",
+                tanya: "Piagam Madinah yang dibuat oleh Nabi Muhammad SAW adalah contoh dokumen historis dunia terbaik mengenai...",
+                opsi: ["Sistem perpajakan perdagangan kuno", "Perjanjian perdamaian dan toleransi antar berbagai suku serta agama", "Strategi perang terbuka melawan musuh", "Hukum waris Islam tingkat lanjut"],
+                kunci: 1
+            },
+
+            // --- MATERI 3: PROBLEMATIKA DA'WAH (Soal: 29-40) ---
+            {
+                no: 29,
+                materi: "Problematika Da'wah",
+                tanya: "Seorang dai wajib memiliki sifat 'Fathanah' dalam mengelola masalah dakwah. Arti fathanah adalah...",
+                opsi: ["Jujur", "Dapat dipercaya", "Cerdas/Bijaksana", "Menyampaikan"],
+                kunci: 2
+            },
+            {
+                no: 30,
+                materi: "Problematika Da'wah",
+                tanya: "Umat Islam diperintahkan mengajak kebaikan dan mencegah kemungkaran. Istilah ini dikenal dengan...",
+                opsi: ["Hubbul Wathan Minal Iman", "Amar Ma'ruf Nahi Munkar", "Baldatun Thayyibatun", "Ukhuwah Islamiyah"],
+                kunci: 1
+            },
+            {
+                no: 31,
+                materi: "Problematika Da'wah",
+                tanya: "Nabi yang mendapatkan gelar Ulul Azmi adalah para nabi yang memiliki keistimewaan dalam hal...",
+                opsi: ["Kekayaan harta melimpah", "Ketabahan dan kesabaran yang luar biasa menghadapi problematika dakwah", "Jumlah pengikut yang paling banyak seketika", "Suara yang paling merdu saat membaca kitab"],
+                kunci: 1
+            },
+            {
+                no: 32,
+                materi: "Problematika Da'wah",
+                tanya: "Tujuan utama akhir dari seluruh aktivitas dakwah Islamiyah di bumi adalah...",
+                opsi: ["Mendapatkan popularitas dan pujian manusia", "Mengumpulkan dana sosial sebanyak mungkin", "Mengajak manusia ke jalan Allah agar selamat di dunia dan akhirat", "Menguasai seluruh wilayah pemerintahan secara mutlak"],
+                kunci: 2
+            },
+            {
+                no: 33,
+                materi: "Problematika Da'wah",
+                tanya: "Jika melihat kemungkaran, penanganan utama bagi yang memiliki otoritas/kekuasaan menurut hadis adalah mengubahnya dengan...",
+                opsi: ["Tangannya (kekuasaan/tindakan tegas)", "Lisannya (nasihat)", "Hatinya (doa/membenci perbuatan tersebut)", "Hartanya"],
+                kunci: 0
+            },
+            {
+                no: 34,
+                materi: "Problematika Da'wah",
+                tanya: "Berdakwah tanpa bekal ilmu agama yang mumpuni dan memadai berisiko mengakibatkan...",
+                opsi: ["Dakwah menjadi semakin terkenal", "Menyesatkan diri sendiri dan orang lain akibat salah menyampaikan fatwa", "Masyarakat langsung patuh", "Umat Islam menjadi bersatu tanpa celah"],
+                kunci: 1
+            },
+            {
+                no: 35,
+                materi: "Problematika Da'wah",
+                tanya: "Sikap mental cepat putus asa yang dimiliki seorang penyeru kebaikan ketika dakwahnya sepi pendengar hukumnya...",
+                opsi: ["Dianjurkan", "Harus dihindari karena bertolak belakang dengan etos kerja para rasul", "Diperbolehkan", "Sunnah Muakkad"],
+                kunci: 1
+            },
+            {
+                no: 36,
+                materi: "Problematika Da'wah",
+                tanya: "Inti dakwah Nabi Muhammad SAW pertama kali saat berada di fase Makkah fokus pada perbaikan...",
+                opsi: ["Sistem hukum tata negara", "Akidah, tauhid, dan akhlak masyarakat", "Teknik pertanian terpadu", "Strategi militer tingkat tinggi"],
+                kunci: 1
+            },
+            {
+                no: 37,
+                materi: "Problematika Da'wah",
+                tanya: "Problematika dakwah berupa 'Syu'ubiyah' atau primordialisme/fanatisme kesukuan yang berlebihan dapat dihilangkan dengan menanamkan konsep...",
+                opsi: ["Bahwa manusia dinilai Allah hanya berdasarkan tingkat ketakwaannya", "Masing-masing suku paling benar sendiri", "Mengisolasi diri dari suku lain", "Merendahkan kebudayaan daerah lain"],
+                kunci: 0
+            },
+            {
+                no: 38,
+                materi: "Problematika Da'wah",
+                tanya: "Dalam menyampaikan ayat Al-Qur'an, asas minimal yang diperintahkan Rasulullah SAW adalah...",
+                opsi: ["Sampaikan dariku walau hanya satu ayat", "Jangan sampaikan jika belum hafal seluruh Al-Qur'an", "Sampaikan khusus untuk kalangan ulama saja", "Sampaikan dengan bayaran yang tinggi"],
+                kunci: 0
+            },
+            {
+                no: 39,
+                materi: "Problematika Da'wah",
+                tanya: "Sikap acuh tak acuh dan masa bodoh dari masyarakat (apatisme) terhadap nilai-nilai agama merupakan jenis tantangan dakwah dari segi...",
+                opsi: ["Faktor Geografis", "Faktor Sosio-Kultural/Karakter Objek Dakwah", "Faktor Politik Penguasa", "Faktor Ekonomi Global"],
+                kunci: 1
+            },
+            {
+                no: 40,
+                materi: "Problematika Da'wah",
+                tanya: "Agar pesan dakwah mudah diterima oleh generasi muda zaman sekarang, maka strategi yang paling relevan dilakukan adalah...",
+                opsi: ["Menggunakan bahasa kuno yang sulit dipahami", "Memanfaatkan konten kreatif, infografis, dan video pendek di media sosial", "Menjauhi segala bentuk perangkat teknologi modern", "Memaksa mereka mendengarkan ceramah berjam-jam tanpa jeda"],
+                kunci: 1
+            }
+        ];
+
+        // Fungsi merender/menampilkan soal ke HTML saat halaman dimuat
+        function renderSoal() {
+            const container = document.getElementById('quizContainer');
+            container.innerHTML = ''; // bersihkan kontainer
+
+            daftarSoal.forEach((item, index) => {
+                // Pilih warna label badge berdasarkan materi
+                let badgeColor = "bg-purple-100 text-purple-800";
+                if(item.materi.includes("mim sukun")) badgeColor = "bg-blue-100 text-blue-800";
+                if(item.materi.includes("Toleransi")) badgeColor = "bg-amber-100 text-amber-800";
+
+                let opsiHTML = '';
+                item.opsi.forEach((opsi, idxOpsi) => {
+                    opsiHTML += `
+                        <label class="flex items-start p-3 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 cursor-pointer transition">
+                            <input type="radio" name="soal_${item.no}" value="${idxOpsi}" required class="mt-1 mr-3 h-4 w-4 text-green-600 focus:ring-green-500 border-slate-300">
+                            <span class="text-slate-700 text-sm md:text-base">${opsi}</span>
+                        </label>
+                    `;
+                });
+
+                container.innerHTML += `
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="inline-block bg-slate-200 text-slate-800 font-bold px-3 py-1 rounded-md text-sm">Soal No. ${item.no}</span>
+                            <span class="text-xs font-semibold px-2 py-1 rounded-md ${badgeColor}">${item.materi}</span>
+                        </div>
+                        <p class="text-slate-800 font-medium text-base md:text-lg mb-4">${item.tanya}</p>
+                        <div class="grid grid-cols-1 gap-2">
+                            ${opsiHTML}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Fungsi menghitung skor hasil ujian
+        function hitungSkor(event) {
+            event.preventDefault(); // Mencegah reload halaman asal saat submit
+
+            let benar = 0;
+            let totalSoal = daftarSoal.length;
+
+            daftarSoal.forEach((item) => {
+                const pilihan = document.querySelector(`input[name="soal_${item.no}"]:checked`);
+                if(pilihan && parseInt(pilihan.value) === item.kunci) {
+                    benar++;
+                }
+            });
+
+            // Rumus nilai skala 100
+            let nilaiAkhir = Math.round((benar / totalSoal) * 100);
+
+            // Tampilkan kotak hasil
+            const resultBox = document.getElementById('resultBox');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const statsDisplay = document.getElementById('statsDisplay');
+
+            scoreDisplay.innerText = nilaiAkhir;
+            statsDisplay.innerText = `Anda menjawab benar ${benar} dari ${totalSoal} soal pilihan ganda.`;
+            
+            resultBox.classList.remove('hidden');
+            
+            // Scroll otomatis halus ke bagian hasil nilai di bawah
+            resultBox.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Jalankan fungsi tampilkan soal saat aplikasi pertama kali dibuka
+        window.onload = renderSoal;
+    </script>
+</body>
+</html>
